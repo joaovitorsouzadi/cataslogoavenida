@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Empório Avenida | Convites & Papelaria Fina</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              orange: '#F27424',
+              'orange-dark': '#d75d11',
+              'orange-light': '#FFF5EE',
+              blue: '#3252A2',
+              'blue-dark': '#233c7a',
+              'blue-light': '#F1F4FA',
+              stone: '#FAF8F5',
+              border: '#E8E4DE'
+            }
+          },
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            logo: ['Montserrat', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #f8f8f8; }
+    ::-webkit-scrollbar-thumb { background: #d6d3ce; border-radius: 4px; }
+    .thumb-active {
+      border-color: #3252A2 !important;
+      box-shadow: 0 0 0 1.5px #3252A2;
+    }
+  </style>
+</head>
+<body class="bg-brand-stone text-stone-800 font-sans antialiased selection:bg-brand-orange selection:text-white min-h-screen flex flex-col justify-between">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-brand-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+      
+      <!-- Logotipo -->
+      <a href="#" class="flex flex-col group py-1">
+        <span class="font-logo font-bold tracking-[0.28em] text-[13px] sm:text-[15px] text-brand-orange leading-none pl-0.5">
+          EMPÓRIO
+        </span>
+        <span class="font-logo font-black text-2xl sm:text-[28px] text-brand-blue tracking-tight -mt-0.5 group-hover:opacity-90 transition-opacity">
+          AVENIDA
+        </span>
+      </a>
+
+      <div class="hidden md:block text-xs uppercase tracking-widest text-stone-500 font-medium">
+        Papelaria Artesanal & Convites de Casamento
+      </div>
+
+      <!-- Carrinho -->
+      <button 
+        onclick="toggleCart(true)" 
+        class="flex items-center gap-2.5 px-4 py-2 rounded-full border border-stone-300 hover:border-brand-blue text-stone-700 hover:text-brand-blue bg-white transition-all text-xs font-semibold tracking-wider uppercase"
+      >
+        <span>Carrinho</span>
+        <span id="cartCountBadge" class="bg-brand-orange text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Barra de Busca & Filtros -->
+  <section class="border-b border-brand-border bg-white py-4 sticky top-20 z-30 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-3">
+        
+        <div class="relative flex-1">
+          <input 
+            type="text" 
+            id="searchInput"
+            placeholder="Buscar por nome do convite, dimensão, papel vegetal, linho ou perolado..."
+            class="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm bg-stone-50 border border-stone-200 rounded-lg focus:outline-none focus:border-brand-blue focus:bg-white transition-all text-stone-800 placeholder-stone-400"
+            oninput="handleSearch(this.value)"
+          >
+          <svg class="w-4 h-4 text-stone-400 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+        </div>
+
+        <!-- Botão Único de Filtros -->
+        <div class="relative">
+          <button 
+            id="filterDropdownBtn" 
+            onclick="toggleFilterMenu()"
+            class="flex items-center gap-2 px-4 py-2.5 bg-stone-50 hover:bg-stone-100 border border-stone-200 rounded-lg text-xs font-semibold text-stone-700 tracking-wider uppercase transition-all"
+          >
+            <svg class="w-4 h-4 text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+            </svg>
+            <span id="activeFilterName">Filtros</span>
+            <svg class="w-3.5 h-3.5 text-stone-400 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+
+          <!-- Menu Dropdown -->
+          <div 
+            id="filterMenu" 
+            class="hidden absolute right-0 mt-2 w-72 bg-white border border-stone-200 rounded-xl shadow-xl p-4 z-50 text-xs space-y-4"
+          >
+            <div>
+              <div class="font-bold text-stone-900 uppercase tracking-wider text-[11px] mb-2 border-b border-stone-100 pb-1">
+                Filtrar por Categoria
+              </div>
+              <div class="space-y-1">
+                <button onclick="selectCategory('Todas')" class="filter-opt w-full text-left px-2.5 py-1.5 rounded bg-stone-100 text-brand-blue font-bold flex justify-between items-center" data-val="Todas">
+                  <span>Todas as Categorias</span>
+                  <span class="text-[10px] text-stone-400">Padrão</span>
+                </button>
+                <button onclick="selectCategory('Manuais dos Padrinhos & Convidados')" class="filter-opt w-full text-left px-2.5 py-1.5 rounded hover:bg-stone-100 text-stone-600" data-val="Manuais dos Padrinhos & Convidados">Manuais dos Padrinhos</button>
+                <button onclick="selectCategory('Convites de Casamento & Especiais')" class="filter-opt w-full text-left px-2.5 py-1.5 rounded hover:bg-stone-100 text-stone-600" data-val="Convites de Casamento & Especiais">Convites de Casamento</button>
+                <button onclick="selectCategory('Menus & Cardápios de Mesa')" class="filter-opt w-full text-left px-2.5 py-1.5 rounded hover:bg-stone-100 text-stone-600" data-val="Menus & Cardápios de Mesa">Menus & Cardápios</button>
+                <button onclick="selectCategory('Lágrimas de Alegria')" class="filter-opt w-full text-left px-2.5 py-1.5 rounded hover:bg-stone-100 text-stone-600" data-val="Lágrimas de Alegria">Lágrimas de Alegria</button>
+                <button onclick="selectCategory('Placas de Reservado')" class="filter-opt w-full text-left px-2.5 py-1.5 rounded hover:bg-stone-100 text-stone-600" data-val="Placas de Reservado">Placas de Reservado</button>
+                <button onclick="selectCategory('Votos dos Noivos')" class="filter-opt w-full text-left px-2.5 py-1.5 rounded hover:bg-stone-100 text-stone-600" data-val="Votos dos Noivos">Votos dos Noivos</button>
+                <button onclick="selectCategory('Ventarolas')" class="filter-opt w-full text-left px-2.5 py-1.5 rounded hover:bg-stone-100 text-stone-600" data-val="Ventarolas">Ventarolas</button>
+                <button onclick="selectCategory('Tags & Lembrancinhas')" class="filter-opt w-full text-left px-2.5 py-1.5 rounded hover:bg-stone-100 text-stone-600" data-val="Tags & Lembrancinhas">Tags & Lembrancinhas</button>
+                <button onclick="selectCategory('Pajem & Daminha')" class="filter-opt w-full text-left px-2.5 py-1.5 rounded hover:bg-stone-100 text-stone-600" data-val="Pajem & Daminha">Pajem & Daminha</button>
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-stone-100">
+              <div class="font-bold text-stone-900 uppercase tracking-wider text-[11px] mb-2">Tipo de Papel</div>
+              <div class="grid grid-cols-2 gap-1.5 text-[11px]">
+                <button onclick="selectPaper('TODOS')" class="paper-opt text-left px-2 py-1 rounded bg-stone-100 font-bold text-brand-blue" data-paper="TODOS">Todos os Papéis</button>
+                <button onclick="selectPaper('Perolado')" class="paper-opt text-left px-2 py-1 rounded hover:bg-stone-100 text-stone-600" data-paper="Perolado">Perolado 180g</button>
+                <button onclick="selectPaper('Cartão')" class="paper-opt text-left px-2 py-1 rounded hover:bg-stone-100 text-stone-600" data-paper="Cartão">Cartão 180g</button>
+                <button onclick="selectPaper('Vegetal')" class="paper-opt text-left px-2 py-1 rounded hover:bg-stone-100 text-stone-600" data-paper="Vegetal">Vegetal 90g</button>
+                <button onclick="selectPaper('Linho')" class="paper-opt text-left px-2 py-1 rounded hover:bg-stone-100 text-stone-600" data-paper="Linho">Linho 180g</button>
+              </div>
+            </div>
+
+            <button onclick="resetFilters()" class="w-full text-center py-1.5 text-[11px] text-stone-500 hover:text-brand-orange border-t border-stone-100 pt-2">
+              Limpar Filtros
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <div id="filterPillContainer" class="hidden items-center gap-2 pt-3 text-xs">
+        <span class="text-stone-400">Filtrando por:</span>
+        <span id="activeFilterPill" class="px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-700 font-medium border border-stone-200"></span>
+        <button onclick="resetFilters()" class="text-brand-orange hover:underline text-[11px]">Remover</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Catálogo por Categorias -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1">
+    <div id="catalogSectionsContainer" class="space-y-14"></div>
+
+    <div id="emptyResults" class="hidden text-center py-20">
+      <p class="font-serif text-2xl text-stone-700">Nenhum produto encontrado</p>
+      <p class="text-xs text-stone-500 mt-1">Verifique o termo de busca ou altere o filtro de papel e categoria.</p>
+      <button onclick="resetFilters()" class="mt-4 px-4 py-2 border border-stone-300 rounded text-xs font-semibold text-stone-700 hover:border-brand-blue">
+        Exibir Todos os Produtos
+      </button>
+    </div>
+  </main>
+
+  <!-- Modal Fino: Galeria Mercado Livre + Especificações Resumidas -->
+  <div id="productConfigModal" class="fixed inset-0 z-50 hidden bg-stone-900/50 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+    <div class="bg-white w-full max-w-4xl rounded-xl shadow-2xl border border-stone-200 overflow-hidden my-6 max-h-[92vh] flex flex-col">
+      
+      <div class="px-6 py-3.5 border-b border-stone-100 flex items-center justify-between bg-stone-50/50">
+        <div>
+          <span id="modalCategoryBadge" class="text-[10px] font-bold uppercase tracking-widest text-brand-orange">Categoria</span>
+          <h2 id="modalProductName" class="font-serif text-lg sm:text-2xl text-stone-900 font-bold leading-tight">Nome do Convite</h2>
+        </div>
+        <button onclick="closeProductModal()" class="text-stone-400 hover:text-stone-700 p-1.5 rounded-lg hover:bg-stone-200/50 transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="p-4 sm:p-6 overflow-y-auto flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Galeria Mercado Livre -->
+        <div class="lg:col-span-6 flex flex-col-reverse sm:flex-row gap-3">
+          <div id="mlThumbsList" class="flex sm:flex-col gap-2 overflow-x-auto sm:overflow-y-auto sm:max-h-[400px] max-w-full sm:w-20 shrink-0 custom-scroll pb-1 sm:pb-0"></div>
+
+          <div class="relative flex-1 bg-stone-50 rounded-lg border border-stone-200 overflow-hidden flex items-center justify-center min-h-[300px] sm:min-h-[400px]">
+            <img 
+              id="mlMainPhoto" 
+              src="" 
+              alt="Visualização" 
+              class="w-full h-full object-cover sm:object-contain transition-opacity duration-200"
+            >
+            <span id="mlPhotoCounter" class="absolute bottom-2.5 right-2.5 bg-stone-900/75 text-white text-[10px] font-medium px-2 py-0.5 rounded backdrop-blur-xs">
+              1 / 1
+            </span>
+            <span id="modalPaperTag" class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-white/95 text-stone-700 shadow-xs border border-stone-200">
+              Papel
+            </span>
+          </div>
+        </div>
+
+        <!-- Especificações e Pedido -->
+        <div class="lg:col-span-6 flex flex-col justify-between space-y-4">
+          <div class="space-y-3">
+            <p id="modalProductDesc" class="text-xs sm:text-sm text-stone-600 leading-relaxed"></p>
+
+            <!-- Box Resumido de Especificações Comerciais -->
+            <div class="bg-stone-50 border border-stone-200 rounded-lg p-3.5 space-y-2">
+              <span class="font-bold text-stone-800 uppercase tracking-wider text-[10px] block border-b border-stone-200/80 pb-1.5">
+                Especificações do Produto
+              </span>
+              
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <div>
+                  <span class="text-stone-400 block text-[10px] uppercase font-semibold">Papel</span>
+                  <span id="modalSpecPapel" class="font-semibold text-stone-800 text-xs">-</span>
+                </div>
+                <div>
+                  <span class="text-stone-400 block text-[10px] uppercase font-semibold">Dimensões</span>
+                  <span id="modalSpecFormato" class="font-semibold text-stone-800 text-xs">-</span>
+                </div>
+                <div>
+                  <span class="text-stone-400 block text-[10px] uppercase font-semibold">Itens Inclusos</span>
+                  <span id="modalSpecInclusos" class="font-semibold text-stone-800 text-xs">-</span>
+                </div>
+                <div>
+                  <span class="text-stone-400 block text-[10px] uppercase font-semibold">Tiragem Mínima</span>
+                  <span id="modalSpecMinOrder" class="font-semibold text-stone-800 text-xs">-</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quantidade e Dica da Melhor Quantidade -->
+          <div class="border border-stone-200 rounded-lg p-4 bg-white space-y-3">
+            <div class="flex items-center justify-between">
+              <label class="text-xs font-bold uppercase tracking-wider text-stone-700">Quantidade Desejada</label>
+              <span class="text-[11px] text-stone-500">Mínimo: <b id="modalMinNotice">1</b> unidades</span>
+            </div>
+
+            <div class="flex items-center gap-3 flex-wrap">
+              <div class="inline-flex items-center border border-stone-300 rounded bg-stone-50">
+                <button onclick="changeModalQty(-1)" class="px-3.5 py-1.5 text-stone-600 hover:text-stone-900 font-bold hover:bg-stone-200 transition-colors">-</button>
+                <input 
+                  type="number" 
+                  id="modalQtyInput" 
+                  value="1" 
+                  min="1"
+                  class="w-14 text-center font-bold text-xs sm:text-sm bg-transparent focus:outline-none"
+                  oninput="onModalInputQty(this.value)"
+                >
+                <button onclick="changeModalQty(1)" class="px-3.5 py-1.5 text-stone-600 hover:text-stone-900 font-bold hover:bg-stone-200 transition-colors">+</button>
+              </div>
+
+              <div id="modalQuickBatchPills" class="flex items-center gap-1.5 flex-wrap"></div>
+            </div>
+
+            <!-- Dica Refinada: Informa a Quantidade Mínima para Menor Valor -->
+            <div id="modalEfficiencyNotice" class="text-[11px] p-2.5 rounded-lg border leading-relaxed"></div>
+          </div>
+
+          <!-- Totalizador -->
+          <div class="pt-3 border-t border-stone-200 flex items-center justify-between gap-4">
+            <div>
+              <span class="text-[10px] uppercase tracking-wider text-stone-400 block font-semibold">Valor Total</span>
+              <div class="flex items-baseline gap-1.5">
+                <span id="modalCalcTotal" class="text-xl sm:text-2xl font-bold font-serif text-brand-blue">R$ 0,00</span>
+                <span id="modalCalcPerUnit" class="text-xs text-stone-500 font-medium">(R$ 0,00 / un)</span>
+              </div>
+            </div>
+
+            <button 
+              onclick="confirmAddToCartFromModal()" 
+              class="px-5 py-3 rounded bg-brand-orange hover:bg-brand-orange-dark text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-sm text-center"
+            >
+              Adicionar ao Pedido
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Drawer do Carrinho -->
+  <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
+    <div onclick="toggleCart(false)" class="absolute inset-0 bg-stone-900/30 backdrop-blur-xs"></div>
+    <div class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl flex flex-col z-10 border-l border-brand-border">
+      
+      <div class="p-5 border-b border-brand-border flex items-center justify-between">
+        <div>
+          <h3 class="font-serif text-lg font-bold text-stone-900">Seu Pedido</h3>
+          <span id="drawerItemsCountText" class="text-xs text-stone-500">0 modelos adicionados</span>
+        </div>
+        <button onclick="toggleCart(false)" class="text-stone-400 hover:text-stone-700 p-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <div id="cartDrawerList" class="flex-1 overflow-y-auto p-4 space-y-3 custom-scroll"></div>
+
+      <div class="p-5 border-t border-brand-border bg-stone-50 space-y-3">
+        <div class="flex justify-between items-baseline">
+          <span class="text-xs font-bold uppercase tracking-wider text-stone-600">Total Previsto:</span>
+          <span id="cartDrawerGrandTotal" class="text-xl font-bold font-serif text-brand-blue">R$ 0,00</span>
+        </div>
+        <p class="text-[11px] text-stone-500 leading-normal">
+          Ao clicar, seu pedido formatado será enviado para nosso WhatsApp <b>(+55 64 8447-1933)</b> para envio dos nomes, brasão e personalização.
+        </p>
+
+        <button 
+          onclick="checkoutToWhatsApp()" 
+          class="w-full py-3.5 bg-brand-blue hover:bg-brand-blue-dark text-white rounded text-xs font-bold uppercase tracking-widest transition-all text-center flex items-center justify-center gap-2"
+        >
+          Enviar Pedido para WhatsApp
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="border-t border-brand-border bg-white mt-16 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-500">
+      <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-6">
+        <span class="font-bold text-stone-700">EMPÓRIO AVENIDA</span>
+        <span>Atendimento & Produção: +55 (64) 8447-1933</span>
+      </div>
+      <div>
+        Produção Gráfica Especializada & Papelaria Fina
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const WHATSAPP_PHONE = "556484471933";
+
+    // 1. BASE DE DADOS OFICIAL COM TODAS AS 87 FOTOS REAIS DO DRIVE
+    const catalogData = [
+      {
+        id: 1,
+        nome: "Manual dos Padrinhos Perolado 8 Páginas - 9,5cm x 9,5cm",
+        categoria: "Manuais dos Padrinhos & Convidados",
+        papel: "Perolado 180g",
+        formato: "9,5 x 9,5cm (8 páginas)",
+        inclusos: "Presilha fitilha delicada inclusa",
+        descricao: "Papel perolado 180g com recorte de alta precisão. Acabamento refinado com presilha fitilha.",
+        paginas: 8,
+        capacidade: 6,
+        precoFolha: 14.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 1,
+        loteOtimo: 3,
+        precoAvulso: 28.00,
+        menorPreco: 18.67,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1Ex-zoPJZ60eheAL6oP-6xIzx_uk4HL6J",
+          "https://lh3.googleusercontent.com/d/1M_tVHu02LTnMTbqOJotdLGQUcZAmhyKK",
+          "https://lh3.googleusercontent.com/d/15S-ALV4QpwD5QBIN6dRkFR2iaMaWHK3a",
+          "https://lh3.googleusercontent.com/d/12vkc_e8Zclo2j8yV3VIUlcm339b8Jf_I",
+          "https://lh3.googleusercontent.com/d/1XQuq4bfh60jTah5_8D22Lz1thGsdx4zU",
+          "https://lh3.googleusercontent.com/d/1r_2mLBk96HRHsZF_42O9yA6acpVB_sVV",
+          "https://lh3.googleusercontent.com/d/1nS1w6lloNqvwzMQADEZmDMjjvTERutrO",
+          "https://lh3.googleusercontent.com/d/1V7GrN_9qBEdDXZMSbqjK0J-NJByeV12q"
+        ]
+      },
+      {
+        id: 2,
+        nome: "Manual dos Padrinhos Perolado 9 Páginas - 7cm x 7cm",
+        categoria: "Manuais dos Padrinhos & Convidados",
+        papel: "Perolado 180g",
+        formato: "7 x 7cm (9 páginas)",
+        inclusos: "Presilha de metal luxo inclusa",
+        descricao: "Papel Cartão perolado 180g com recorte - Formato compacto elegante para caixas de padrinhos.",
+        paginas: 9,
+        capacidade: 12,
+        precoFolha: 14.00,
+        adicionalUnitario: 5.00,
+        pedidoMinimo: 1,
+        loteOtimo: 4,
+        precoAvulso: 19.00,
+        menorPreco: 15.50,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/12F-xBP1ve4dXpBIezkJSRbTct1PWEGwZ",
+          "https://lh3.googleusercontent.com/d/11fzDqmPVq00OrVArDmaWcioYBcn8zsUK",
+          "https://lh3.googleusercontent.com/d/1IZBbXkXTnksolaHH5YqQyDBJ9TCUB10z",
+          "https://lh3.googleusercontent.com/d/1Nouxys4gF6RjCKV-O15pUlewvNTYvksi",
+          "https://lh3.googleusercontent.com/d/1NXHEr_--c5Eatndgs4kktT6GKAuFOxIO",
+          "https://lh3.googleusercontent.com/d/1hcweN0neI46lI5RWVgzKYdBhgEa0R83_",
+          "https://lh3.googleusercontent.com/d/1ihIJeb03nLhOvzdLxpeizPvG-0MeBLGf",
+          "https://lh3.googleusercontent.com/d/1cVRwQpWnfvV3S7Tr8NPfeBJiqN667EA3",
+          "https://lh3.googleusercontent.com/d/1b_892BjPGNuqS-iyIC9VM8nNjliOU_Cu"
+        ]
+      },
+      {
+        id: 3,
+        nome: "Manual dos Padrinhos Papel Cartão 10 Páginas - 9,5cm x 9,5cm",
+        categoria: "Manuais dos Padrinhos & Convidados",
+        papel: "Papel Cartão 180g",
+        formato: "9,5 x 9,5cm (10 páginas)",
+        inclusos: "Presilha de metal luxo inclusa",
+        descricao: "Papel Cartão 180g com recorte - 10 páginas completas com presilha de metal.",
+        paginas: 10,
+        capacidade: 6,
+        precoFolha: 8.00,
+        adicionalUnitario: 5.00,
+        pedidoMinimo: 1,
+        loteOtimo: 3,
+        precoAvulso: 21.00,
+        menorPreco: 18.33,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1zy0DdtE6FwWpfjq9wqMvbhTkbfQvLaAE",
+          "https://lh3.googleusercontent.com/d/1nCu-XaiIDp4yrE83WMLR0G-cjx9Jp1ay",
+          "https://lh3.googleusercontent.com/d/1SEv9sVw5ZYNsu5PTIjhn1-KmtS82Mux0",
+          "https://lh3.googleusercontent.com/d/136mpj_Ro0Q_U1fz5jth0DlV5JsS1-0TD",
+          "https://lh3.googleusercontent.com/d/1t6uc9kfQhD41NzsfRSiu48YnKZocV4wF",
+          "https://lh3.googleusercontent.com/d/1NXK_9HM4wmX3gN4TbJzM-VxssSTGr0e6",
+          "https://lh3.googleusercontent.com/d/1p9TG5l8ijxYobdvOBqHlJ7FRoxQ_KD5X",
+          "https://lh3.googleusercontent.com/d/1KybL-qmdWt0x-b5WjHEnNp_Pig7etE_n",
+          "https://lh3.googleusercontent.com/d/1vXK0GUkYp8QQnYWCFjBSqGTLQc4EYwiq",
+          "https://lh3.googleusercontent.com/d/1qpMZEhqyMjBXJR_JTzZ6iQBoXHk9-0t1"
+        ]
+      },
+      {
+        id: 4,
+        nome: "Manual dos Padrinhos Perolado Folha Única - 10cm x 15cm",
+        categoria: "Manuais dos Padrinhos & Convidados",
+        papel: "Perolado 180g",
+        formato: "10 x 15cm (Lâmina Única)",
+        inclusos: "Recorte digital de precisão",
+        descricao: "Papel Cartão perolado 180g com recorte - Formato 10 x 15cm.",
+        paginas: 1,
+        capacidade: 3,
+        precoFolha: 14.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 3,
+        loteOtimo: 3,
+        precoAvulso: 14.00,
+        menorPreco: 4.67,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1SOTwA8VVNG7pkSxolEbZ4BInSN1AjCVr"
+        ]
+      },
+      {
+        id: 5,
+        nome: "Manual dos Convidados Perolado Página Única - 10cm x 15cm",
+        categoria: "Manuais dos Padrinhos & Convidados",
+        papel: "Perolado 180g",
+        formato: "10 x 15cm",
+        inclusos: "Recorte digital de precisão",
+        descricao: "Papel Cartão perolado 180g com recorte - Ideal para orientações aos convidados.",
+        paginas: 1,
+        capacidade: 3,
+        precoFolha: 14.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 3,
+        loteOtimo: 3,
+        precoAvulso: 14.00,
+        menorPreco: 4.67,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1x2NWMd8jLg3qRpQku7QqvQEDL06vngio"
+        ]
+      },
+      {
+        id: 6,
+        nome: "Convite em 3 Dobras (Trifold) - Papel Cartão A4",
+        categoria: "Convites de Casamento & Especiais",
+        papel: "Papel Cartão 180g",
+        formato: "A4 com 3 Dobras Vincadas",
+        inclusos: "Vincos de precisão (dispensa envelope)",
+        descricao: "Papel Cartão 180g frente e verso com vincos e dobras - Folha A4 inteira.",
+        paginas: 1,
+        capacidade: 1,
+        precoFolha: 10.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 1,
+        loteOtimo: 1,
+        precoAvulso: 10.00,
+        menorPreco: 10.00,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1SapOqT0nqlcXJKlDHQkf_VBK8lPTdEF_",
+          "https://lh3.googleusercontent.com/d/1BVXNnpI7u_1dzBhTIaDKs2DR1ppu43CV",
+          "https://lh3.googleusercontent.com/d/15u1Gp63QazUwSTynOSKeJj24Vv1Bzdv_",
+          "https://lh3.googleusercontent.com/d/1oHnlOnIuqYXyECJnavcEyC9o-vtmevmw"
+        ]
+      },
+      {
+        id: 7,
+        nome: "Convite de Casamento Perolado com Envelope em Papel Vegetal - 17cm x 25cm",
+        categoria: "Convites de Casamento & Especiais",
+        papel: "Perolado 180g + Vegetal 90g",
+        formato: "17 x 25cm",
+        inclusos: "Envelope luva vegetal translúcido",
+        descricao: "Impressão papel perolado 180g com recorte + Capa envelope em papel vegetal 90g.",
+        paginas: 1,
+        capacidade: 1,
+        precoFolha: 14.00,
+        adicionalUnitario: 5.00,
+        pedidoMinimo: 1,
+        loteOtimo: 1,
+        precoAvulso: 19.00,
+        menorPreco: 19.00,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1a1T7Q1PixV2ASo7mNNW3zLi_3aYZOU_c",
+          "https://lh3.googleusercontent.com/d/1PWQUsWyGR37g4HPEpr7EItWs6lg_FkDN"
+        ]
+      },
+      {
+        id: 8,
+        nome: "Convite de Casamento Papel Cartão + Envelope com Lacre - 17cm x 25cm",
+        categoria: "Convites de Casamento & Especiais",
+        papel: "Papel Cartão 180g",
+        formato: "17 x 25cm",
+        inclusos: "Envelope tradicional + Lacre de cera",
+        descricao: "Impressão papel cartão 180g + Envelope tradicional + Lacre de cera artesanal.",
+        paginas: 1,
+        capacidade: 1,
+        precoFolha: 8.00,
+        adicionalUnitario: 13.00,
+        pedidoMinimo: 1,
+        loteOtimo: 1,
+        precoAvulso: 21.00,
+        menorPreco: 21.00,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/10goJmePhBzu8ZzqJBNtn8m-oyW4TJdNy",
+          "https://lh3.googleusercontent.com/d/1HL0HRrONBp6FPEucBZ_PK8eHJVSRDT9B",
+          "https://lh3.googleusercontent.com/d/143mZ0MvtwTqENZlSAJqmX42gPvMpObbY"
+        ]
+      },
+      {
+        id: 9,
+        nome: "Convite de Casamento Perolado com Envelope em Papel Vegetal e Lacre - 15cm x 20cm",
+        categoria: "Convites de Casamento & Especiais",
+        papel: "Perolado 180g + Vegetal 90g",
+        formato: "15 x 20cm",
+        inclusos: "Capa vegetal + Lacre de cera artesanal",
+        descricao: "Impressão papel perolado 180g + Capa papel vegetal 90g + Lacre de cera botânico.",
+        paginas: 1,
+        capacidade: 2,
+        precoFolha: 14.00,
+        adicionalUnitario: 10.00,
+        pedidoMinimo: 2,
+        loteOtimo: 2,
+        precoAvulso: 24.00,
+        menorPreco: 17.00,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1rrHI_JJm8istiNE96JBtyUoXLZaac88B",
+          "https://lh3.googleusercontent.com/d/1Gnb8bQqXH6GiL1fqgnjjW7TlGUwtzq6w"
+        ]
+      },
+      {
+        id: 10,
+        nome: "Convite de Casamento Papel Linho com Envelope Azul e Lacre - 15cm x 20cm",
+        categoria: "Convites de Casamento & Especiais",
+        papel: "Papel Linho 180g Texturizado",
+        formato: "15 x 20cm",
+        inclusos: "Envelope azul clássico + Lacre de cera",
+        descricao: "Impressão em papel linho 180g com textura têxtil + Envelope azul nobre + Lacre de cera.",
+        paginas: 1,
+        capacidade: 2,
+        precoFolha: 12.00,
+        adicionalUnitario: 17.00,
+        pedidoMinimo: 2,
+        loteOtimo: 2,
+        precoAvulso: 29.00,
+        menorPreco: 23.00,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/18VpEv77_YIYWUeLBIOznQCkTZQLJwmwF",
+          "https://lh3.googleusercontent.com/d/1ze8QFkeMAmdJloRSZus-UL22V2GIwino"
+        ]
+      },
+      {
+        id: 11,
+        nome: "Convite de Casamento Luxo A3 Papel Cartão + Interno Chamex + Envelope A3 com Lacre",
+        categoria: "Convites de Casamento & Especiais",
+        papel: "Cartão 180g + Interno Chamex A3",
+        formato: "A3 Luxo Imponente",
+        inclusos: "Envelope grande A3 + Lacre de cera",
+        descricao: "Papel cartão 180g A3 + Impressão interna Chamex A3 + Envelope sob medida A3 + Lacre de cera.",
+        paginas: 1,
+        capacidade: 1,
+        precoFolha: 13.00,
+        adicionalUnitario: 29.00,
+        pedidoMinimo: 1,
+        loteOtimo: 1,
+        precoAvulso: 42.00,
+        menorPreco: 42.00,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1TKdIIsbht329cTbfMgWwnBJw_IOCP05N",
+          "https://lh3.googleusercontent.com/d/1rxZ_3xZAa2wZIqOJk6DD75NAEcoS5nx8",
+          "https://lh3.googleusercontent.com/d/1JyF4_s34WHgIXZaQIhCbzO6K0IzaTw5m",
+          "https://lh3.googleusercontent.com/d/1IZqX4uQwiaTO-kQsl192aRovbLEpNOwL"
+        ]
+      },
+      {
+        id: 12,
+        nome: "Convite de Casamento Perolado + Envelope Tradicional com Lacre - 17cm x 25cm",
+        categoria: "Convites de Casamento & Especiais",
+        papel: "Perolado 180g",
+        formato: "17 x 25cm",
+        inclusos: "Envelope clássico + Lacre de cera",
+        descricao: "Impressão papel perolado 180g recortado + Envelope clássico encorpado + Lacre de cera.",
+        paginas: 1,
+        capacidade: 1,
+        precoFolha: 14.00,
+        adicionalUnitario: 13.00,
+        pedidoMinimo: 1,
+        loteOtimo: 1,
+        precoAvulso: 27.00,
+        menorPreco: 27.00,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/15DYOpcXNhElO9Dvb55QVjKF7Xbf2cfNw",
+          "https://lh3.googleusercontent.com/d/1ZqefzIVnmCQqgw8abJQZnk9CgW_lOrFb",
+          "https://lh3.googleusercontent.com/d/1Ssu39PwaNLcIeQV2iz8Wb5X0Bviz1Eqo"
+        ]
+      },
+      {
+        id: 13,
+        nome: "Convite de Casamento Perolado com Envelope Vegetal e Lacre - 15cm x 20cm (Modelo 2)",
+        categoria: "Convites de Casamento & Especiais",
+        papel: "Perolado 180g + Vegetal 90g",
+        formato: "15 x 20cm",
+        inclusos: "Capa vegetal + Lacre de cera botânico",
+        descricao: "Impressão papel perolado 180g + Capa papel vegetal 90g + Lacre de cera personalizado.",
+        paginas: 1,
+        capacidade: 2,
+        precoFolha: 14.00,
+        adicionalUnitario: 10.00,
+        pedidoMinimo: 2,
+        loteOtimo: 2,
+        precoAvulso: 24.00,
+        menorPreco: 17.00,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1dUa8GnnHSiv7R3amp-OaxVELcETmlBzz",
+          "https://lh3.googleusercontent.com/d/1bYt7h64BuCMx77fiRa3QUphrL8WX1Rtb"
+        ]
+      },
+      {
+        id: 14,
+        nome: "Convite / Cartão Perolado Quadrado - 15cm x 15cm",
+        categoria: "Convites de Casamento & Especiais",
+        papel: "Perolado 180g",
+        formato: "15 x 15cm Quadrado",
+        inclusos: "Recorte digital especial",
+        descricao: "Papel cartão perolado 180g recortado - 15 x 15cm versátil para save the date ou convite.",
+        paginas: 1,
+        capacidade: 2,
+        precoFolha: 14.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 2,
+        loteOtimo: 2,
+        precoAvulso: 14.00,
+        menorPreco: 7.00,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/19CfiwZPGTL0U7Wqbs_R51bUv0_Aubqx3"
+        ]
+      },
+      {
+        id: 15,
+        nome: "Menu de Mesa Triangular Papel Cartão 180g (Montado)",
+        categoria: "Menus & Cardápios de Mesa",
+        papel: "Papel Cartão 180g",
+        formato: "Prisma Triangular de Mesa",
+        inclusos: "Entregue recortado e montado",
+        descricao: "Menu triangular em papel cartão 180g recortado e montado (dispensa apoio extra).",
+        paginas: 1,
+        capacidade: 1,
+        precoFolha: 12.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 1,
+        loteOtimo: 1,
+        precoAvulso: 12.00,
+        menorPreco: 12.00,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/12WSzc831iAuSJigdyNRM4fWQgW4w5Ab1",
+          "https://lh3.googleusercontent.com/d/1-OYaxP4V_54mQcC1sYnWIAP5YzFTA2-E",
+          "https://lh3.googleusercontent.com/d/1izOBOe9KfFwBFsWCTDVi_LZpCw_oTBa1",
+          "https://lh3.googleusercontent.com/d/162t4DKwjjku5IPSpqwTzF8IcKZ06VDcW",
+          "https://lh3.googleusercontent.com/d/1vAbJIUfmOd62VjRJwSGZeWbkNTqui4VU",
+          "https://lh3.googleusercontent.com/d/11tF-HRcDG4jVP2h1yhOXFyElyuBsYSgO"
+        ]
+      },
+      {
+        id: 16,
+        nome: "Menu de Mesa Triangular Papel Perolado 180g (Montado)",
+        categoria: "Menus & Cardápios de Mesa",
+        papel: "Perolado 180g",
+        formato: "Prisma Triangular de Mesa",
+        inclusos: "Entregue recortado e montado",
+        descricao: "Menu triangular em papel perolado 180g cintilante, já recortado e montado para o evento.",
+        paginas: 1,
+        capacidade: 1,
+        precoFolha: 14.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 1,
+        loteOtimo: 1,
+        precoAvulso: 14.00,
+        menorPreco: 14.00,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1ePuPNGxqa4_ZRkcvNk5bFq2vm2Dp1DgC",
+          "https://lh3.googleusercontent.com/d/1CA_jG3LZJM3xhmx5ncfTjDihCVUD48lf",
+          "https://lh3.googleusercontent.com/d/1ORTF0gth9XIxRFZhH5axRn_Fjm2GQ2A-",
+          "https://lh3.googleusercontent.com/d/1hQ0bhgRFi6R2BodLoA-YBct88V_GAH8G",
+          "https://lh3.googleusercontent.com/d/1CgWz2HHNIOeVe8x1h2dcySLJOq3kcSgi",
+          "https://lh3.googleusercontent.com/d/1qcqF-VO7Vqa_Qs5kFxVhKbZqEqVAJbEy"
+        ]
+      },
+      {
+        id: 17,
+        nome: "Menu / Item de Papelaria Perolado (Personalizado)",
+        categoria: "Menus & Cardápios de Mesa",
+        papel: "Perolado 180g",
+        formato: "Sob medida para mesa",
+        inclusos: "Recorte digital de alta precisão",
+        descricao: "Item de apoio de mesa em papel perolado com layout harmonizado à paleta da celebração.",
+        paginas: 1,
+        capacidade: 2,
+        precoFolha: 14.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 2,
+        loteOtimo: 2,
+        precoAvulso: 14.00,
+        menorPreco: 7.00,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/11tUVhjE218W9WSSgwrPwA3AUSo25eyFv",
+          "https://lh3.googleusercontent.com/d/1j6BeyKcdrPOhabt9Ss7jtvHPUF7UrSfi"
+        ]
+      },
+      {
+        id: 18,
+        nome: "Menu de Mesa Perolado 180g - 15cm x 20cm",
+        categoria: "Menus & Cardápios de Mesa",
+        papel: "Perolado 180g",
+        formato: "15 x 20cm",
+        inclusos: "Recorte plano para prato ou porta-retrato",
+        descricao: "Menu de mesa em papel perolado 180g recortado - 15 x 20cm.",
+        paginas: 1,
+        capacidade: 2,
+        precoFolha: 14.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 2,
+        loteOtimo: 2,
+        precoAvulso: 14.00,
+        menorPreco: 7.00,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/13p9-YRsu2tFxgVZmXzTlCsHhRhpgLRIY"
+        ]
+      },
+      {
+        id: 19,
+        nome: "Menu de Mesa Perolado Frente e Verso - 9cm x 20cm",
+        categoria: "Menus & Cardápios de Mesa",
+        papel: "Perolado 180g",
+        formato: "9 x 20cm Slim",
+        inclusos: "Impressão frente e verso",
+        descricao: "Menu de mesa em papel perolado 180g frente e verso recortado - 9 x 20cm.",
+        paginas: 1,
+        capacidade: 3,
+        precoFolha: 14.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 3,
+        loteOtimo: 3,
+        precoAvulso: 14.00,
+        menorPreco: 4.67,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1w0nD3ddo9sedlwofnYQfVmV1ZULT_rea"
+        ]
+      },
+      {
+        id: 20,
+        nome: "Menu de Mesa Perolado 180g - 15cm x 20cm (Modelo 2)",
+        categoria: "Menus & Cardápios de Mesa",
+        papel: "Perolado 180g",
+        formato: "15 x 20cm",
+        inclusos: "Recorte fino de precisão",
+        descricao: "Menu de mesa em papel perolado 180g recortado - 15 x 20cm com design moderno.",
+        paginas: 1,
+        capacidade: 2,
+        precoFolha: 14.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 2,
+        loteOtimo: 2,
+        precoAvulso: 14.00,
+        menorPreco: 7.00,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1DK4-uxk5ooID8MRiIDWWJTB1ZzPk4ddG"
+        ]
+      },
+      {
+        id: 21,
+        nome: "Lágrimas de Alegria - Papel Cartão 180g",
+        categoria: "Lágrimas de Alegria",
+        papel: "Papel Cartão 180g",
+        formato: "Porta-Lenço Vincado",
+        inclusos: "Corte e vinco anatômico",
+        descricao: "Lágrimas de Alegria em papel cartão 180g recortado - 7 unidades por folha.",
+        paginas: 1,
+        capacidade: 7,
+        precoFolha: 8.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 7,
+        loteOtimo: 7,
+        precoAvulso: 8.00,
+        menorPreco: 1.14,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1V7IhcfB-URaWf-uhSzmjQ4ae2L5Gd5jj",
+          "https://lh3.googleusercontent.com/d/1nDTr7-x1MspQoG_NuVqIfJbLtH1Wuste"
+        ]
+      },
+      {
+        id: 22,
+        nome: "Lágrimas de Alegria - Papel Perolado 180g",
+        categoria: "Lágrimas de Alegria",
+        papel: "Perolado 180g",
+        formato: "Porta-Lenço Vincado",
+        inclusos: "Corte digital e vinco fino",
+        descricao: "Lágrimas de Alegria em papel perolado 180g acetinado - 7 unidades por folha.",
+        paginas: 1,
+        capacidade: 7,
+        precoFolha: 14.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 7,
+        loteOtimo: 7,
+        precoAvulso: 14.00,
+        menorPreco: 2.00,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/10IGJ7uC2-W4troqJ6SKTPiHuNYqtyDOH"
+        ]
+      },
+      {
+        id: 23,
+        nome: "Placa Reservado de Mesa Perolado - 10cm x 10cm",
+        categoria: "Placas de Reservado",
+        papel: "Perolado 180g",
+        formato: "10 x 10cm Compacto",
+        inclusos: "Recorte de precisão",
+        descricao: "Placa Reservado em papel perolado 180g recortado - 10 x 10cm (4 por folha).",
+        paginas: 1,
+        capacidade: 4,
+        precoFolha: 14.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 4,
+        loteOtimo: 4,
+        precoAvulso: 14.00,
+        menorPreco: 3.50,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1DsC9-RysAod9sx76bXTOEh-3eChb5a1c",
+          "https://lh3.googleusercontent.com/d/11AXOijLiCNm8KT272s5pcSyo_C0ftjhr"
+        ]
+      },
+      {
+        id: 24,
+        nome: "Placa Reservado de Mesa Perolado - 20cm x 23cm",
+        categoria: "Placas de Reservado",
+        papel: "Perolado 180g",
+        formato: "20 x 23cm Grande",
+        inclusos: "Recorte especial de alto destaque",
+        descricao: "Placa Reservado em papel perolado 180g recortado - 20 x 23cm de alto destaque.",
+        paginas: 1,
+        capacidade: 1,
+        precoFolha: 14.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 1,
+        loteOtimo: 1,
+        precoAvulso: 14.00,
+        menorPreco: 14.00,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1xf-KbUQrZ_h5Mndf0B_SeMpPqfODJKUy",
+          "https://lh3.googleusercontent.com/d/1s2mxV7bffRRfmfjD-16ggeg-P8PSbYK7"
+        ]
+      },
+      {
+        id: 25,
+        nome: "Placa Reservado de Mesa Perolado - 20cm x 18cm",
+        categoria: "Placas de Reservado",
+        papel: "Perolado 180g",
+        formato: "20 x 18cm Médio",
+        inclusos: "Recorte digital fino",
+        descricao: "Placa Reservado em papel perolado 180g recortado - 20 x 18cm.",
+        paginas: 1,
+        capacidade: 1,
+        precoFolha: 14.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 1,
+        loteOtimo: 1,
+        precoAvulso: 14.00,
+        menorPreco: 14.00,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1PCKApqdG9vYoaHdKo2-jNwJpPtlNza73",
+          "https://lh3.googleusercontent.com/d/1Q38xcR8FKa5ipv_SsMtSoRjHMBxoGOQb"
+        ]
+      },
+      {
+        id: 26,
+        nome: "Votos dos Noivos Papel Cartão 180g - Folha A4 Inteira",
+        categoria: "Votos dos Noivos",
+        papel: "Papel Cartão 180g",
+        formato: "Folha A4 Inteira",
+        inclusos: "Impressão artística para o altar",
+        descricao: "Votos em papel cartão 180g sem recorte - Folha A4 inteira só frente.",
+        paginas: 1,
+        capacidade: 1,
+        precoFolha: 8.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 1,
+        loteOtimo: 1,
+        precoAvulso: 8.00,
+        menorPreco: 8.00,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1i7xHX72IjECNFtjBSti1TBrBsL0kRMX-",
+          "https://lh3.googleusercontent.com/d/1eudXPB6VkzOvl0gWLjyGEnAYVobOGaS9",
+          "https://lh3.googleusercontent.com/d/1LdaDrx2-gA3HcEFlG7y73ZVoH5jPSOla"
+        ]
+      },
+      {
+        id: 27,
+        nome: "Votos dos Noivos Papel Perolado 180g - Folha A4 Inteira (Modelo 1)",
+        categoria: "Votos dos Noivos",
+        papel: "Perolado 180g",
+        formato: "Folha A4 Inteira",
+        inclusos: "Acabamento cintilante para fotos",
+        descricao: "Votos em papel perolado 180g sem recorte - Folha A4 inteira com acabamento brilhante.",
+        paginas: 1,
+        capacidade: 1,
+        precoFolha: 12.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 1,
+        loteOtimo: 1,
+        precoAvulso: 12.00,
+        menorPreco: 12.00,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1On86RfbbCTozIg6fafA4cRh_HouCRZ5e",
+          "https://lh3.googleusercontent.com/d/1MNt0lEIbNwyh8-QlJtTqdjgR48j2d4S2"
+        ]
+      },
+      {
+        id: 28,
+        nome: "Votos dos Noivos Papel Perolado 180g - Folha A4 Inteira (Modelo 2)",
+        categoria: "Votos dos Noivos",
+        papel: "Perolado 180g",
+        formato: "Folha A4 Inteira",
+        inclusos: "Diagramação clássica de altar",
+        descricao: "Votos em papel perolado 180g sem recorte - Folha A4 inteira clássica.",
+        paginas: 1,
+        capacidade: 1,
+        precoFolha: 12.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 1,
+        loteOtimo: 1,
+        precoAvulso: 12.00,
+        menorPreco: 12.00,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1u1uV8hcBkOIl_YaS35itaBJaA8ICbm4k",
+          "https://lh3.googleusercontent.com/d/1HVCUSMcDLOlvPVc-5TRXilexCi8ju6j6"
+        ]
+      },
+      {
+        id: 29,
+        nome: "Ventarola Papel Cartão 180g",
+        categoria: "Ventarolas",
+        papel: "Papel Cartão 180g",
+        formato: "Anatômico com haste",
+        inclusos: "Recorte anatômico de precisão",
+        descricao: "Ventarola em papel cartão 180g recortada - 2 unidades por folha.",
+        paginas: 1,
+        capacidade: 2,
+        precoFolha: 8.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 2,
+        loteOtimo: 2,
+        precoAvulso: 8.00,
+        menorPreco: 4.00,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/15X06aVeg981_Xct4IMJ-EKzYlEPBPh1b",
+          "https://lh3.googleusercontent.com/d/16ZHo_CNNhaJD5_0KYckE3FRYr91HjIMu"
+        ]
+      },
+      {
+        id: 30,
+        nome: "Ventarola Papel Perolado 180g",
+        categoria: "Ventarolas",
+        papel: "Perolado 180g",
+        formato: "Anatômico com haste",
+        inclusos: "Brilho suave perolado",
+        descricao: "Ventarola em papel perolado 180g recortada - 2 unidades por folha com acabamento perolado.",
+        paginas: 1,
+        capacidade: 2,
+        precoFolha: 14.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 2,
+        loteOtimo: 2,
+        precoAvulso: 14.00,
+        menorPreco: 7.00,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/15OWyrhVDGuMUEOvRhxOp5-njA4pNRZoD",
+          "https://lh3.googleusercontent.com/d/1uwmMgxcCHFfyaIJlLirqrkVOgNMfPVJi"
+        ]
+      },
+      {
+        id: 31,
+        nome: "Mini Ventarola Papel Perolado 180g",
+        categoria: "Ventarolas",
+        papel: "Perolado 180g",
+        formato: "Mini Anatômico",
+        inclusos: "Recorte digital delicado",
+        descricao: "Mini Ventarola em papel perolado 180g recortada - 4 unidades por folha.",
+        paginas: 1,
+        capacidade: 4,
+        precoFolha: 14.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 4,
+        loteOtimo: 4,
+        precoAvulso: 14.00,
+        menorPreco: 3.50,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1ZqmWjPofAxOBzhSo9yvjxY9qi7cMX4gu"
+        ]
+      },
+      {
+        id: 32,
+        nome: "Tags Papel Perolado 5cm (Modelo 1)",
+        categoria: "Tags & Lembrancinhas",
+        papel: "Perolado 180g",
+        formato: "5 x 5cm com furo",
+        inclusos: "Furo central para fita",
+        descricao: "Tags 5cm em papel perolado 180g recortadas - 15 unidades por folha.",
+        paginas: 1,
+        capacidade: 15,
+        precoFolha: 14.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 15,
+        loteOtimo: 15,
+        precoAvulso: 14.00,
+        menorPreco: 0.93,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1bkUUIF6vYo0JXE9FqpQ7r2dv2l4i5rLw",
+          "https://lh3.googleusercontent.com/d/1IzTwNrEg1-Bu3NszLY4U7LAoWkV1hTMf"
+        ]
+      },
+      {
+        id: 33,
+        nome: "Tags Papel Perolado 5cm (Modelo 2)",
+        categoria: "Tags & Lembrancinhas",
+        papel: "Perolado 180g",
+        formato: "5 x 5cm com furo",
+        inclusos: "Furo central para fita",
+        descricao: "Tags 5cm em papel perolado 180g recortadas - Modelo 2.",
+        paginas: 1,
+        capacidade: 15,
+        precoFolha: 14.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 15,
+        loteOtimo: 15,
+        precoAvulso: 14.00,
+        menorPreco: 0.93,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1jUq2s1erXf7wHXUs0_KgvSbUSfUuXEGO"
+        ]
+      },
+      {
+        id: 34,
+        nome: "Tags Papel Perolado Retangular 5cm (Modelo 1)",
+        categoria: "Tags & Lembrancinhas",
+        papel: "Perolado 180g",
+        formato: "5cm Retangular",
+        inclusos: "Furo para fita ou laço",
+        descricao: "Tags retangulares 5cm em papel perolado 180g recortadas - 15 unidades por folha.",
+        paginas: 1,
+        capacidade: 15,
+        precoFolha: 14.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 15,
+        loteOtimo: 15,
+        precoAvulso: 14.00,
+        menorPreco: 0.93,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1ESkh0V0PWyBJWRbXLVXDEPeB_CiWiGyV"
+        ]
+      },
+      {
+        id: 35,
+        nome: "Tags Papel Cartão 180g 5cm",
+        categoria: "Tags & Lembrancinhas",
+        papel: "Papel Cartão 180g",
+        formato: "5cm com furo",
+        inclusos: "Furo de amarração",
+        descricao: "Tags 5cm em papel cartão 180g recortadas - 15 unidades por folha.",
+        paginas: 1,
+        capacidade: 15,
+        precoFolha: 12.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 15,
+        loteOtimo: 15,
+        precoAvulso: 12.00,
+        menorPreco: 0.80,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1LTKczUF7JsRJ89QTwsgN0Sj7l2Cl5bHk"
+        ]
+      },
+      {
+        id: 36,
+        nome: "Tags Papel Perolado Retangular 5cm (Modelo 2)",
+        categoria: "Tags & Lembrancinhas",
+        papel: "Perolado 180g",
+        formato: "5cm Retangular Clássico",
+        inclusos: "Furo de amarração",
+        descricao: "Tags retangulares 5cm em papel perolado 180g recortadas - Modelo 2.",
+        paginas: 1,
+        capacidade: 15,
+        precoFolha: 14.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 15,
+        loteOtimo: 15,
+        precoAvulso: 14.00,
+        menorPreco: 0.93,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1Ttyn7HbRCRvzQ31ciFNRQ83mxAt_z-jK"
+        ]
+      },
+      {
+        id: 37,
+        nome: "Tags Gravata Papel Cartão 180g - 5,5cm",
+        categoria: "Tags & Lembrancinhas",
+        papel: "Papel Cartão 180g",
+        formato: "Silhueta de Gravata 5,5cm",
+        inclusos: "Recorte em formato de gravata",
+        descricao: "Tags formato gravata 5,5cm em papel cartão 180g recortadas para a hora da gravata do noivo.",
+        paginas: 1,
+        capacidade: 15,
+        precoFolha: 12.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 15,
+        loteOtimo: 15,
+        precoAvulso: 12.00,
+        menorPreco: 0.80,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1q5K1BvuU1J6XZZiHHCbYSjaxCtY39g7q"
+        ]
+      },
+      {
+        id: 38,
+        nome: "Convite Pajem e Daminha - Papel Vegetal 90g - 11cm x 19cm",
+        categoria: "Pajem & Daminha",
+        papel: "Papel Vegetal Translúcido 90g",
+        formato: "11 x 19cm",
+        inclusos: "Recorte digital translúcido",
+        descricao: "Convite Pajem e Daminha em papel vegetal 90g recortado - 11 x 19cm (2 por folha).",
+        paginas: 1,
+        capacidade: 2,
+        precoFolha: 5.00,
+        adicionalUnitario: 0.00,
+        pedidoMinimo: 2,
+        loteOtimo: 2,
+        precoAvulso: 5.00,
+        menorPreco: 2.50,
+        fotos: [
+          "https://lh3.googleusercontent.com/d/1Xc_0fTXsaa5IKMX5F2lBoB8qohJ9lbHT",
+          "https://lh3.googleusercontent.com/d/1BwiGhzAMpnknmaz-DsALMPSBFfzr0IoR",
+          "https://lh3.googleusercontent.com/d/1hsP-THXpt3jsl7oAbnKC3cNWLK8nI9Xd"
+        ]
+      }
+    ];
+
+    const categoryOrder = [
+      "Manuais dos Padrinhos & Convidados",
+      "Convites de Casamento & Especiais",
+      "Menus & Cardápios de Mesa",
+      "Lágrimas de Alegria",
+      "Placas de Reservado",
+      "Votos dos Noivos",
+      "Ventarolas",
+      "Tags & Lembrancinhas",
+      "Pajem & Daminha"
+    ];
+
+    // 2. MOTOR DE CÁLCULO
+    function calcPrice(product, qty) {
+      const q = Math.max(1, parseInt(qty) || 1);
+      const totalPages = q * product.paginas;
+      const sheets = Math.ceil(totalPages / product.capacidade);
+      const totalCost = (sheets * product.precoFolha) + (q * product.adicionalUnitario);
+      const unitCost = totalCost / q;
+      const maxUnitsInSheets = Math.floor((sheets * product.capacidade) / product.paginas);
+      const isOptimal = (q === maxUnitsInSheets);
+
+      return {
+        qty: q,
+        sheets: sheets,
+        totalCost: totalCost,
+        unitCost: unitCost,
+        isOptimal: isOptimal,
+        recommendedQty: maxUnitsInSheets
+      };
+    }
+
+    function formatBRL(val) {
+      return Number(val).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    // 3. ESTADO
+    let selectedCategory = 'Todas';
+    let selectedPaper = 'TODOS';
+    let searchTerm = '';
+    let cart = [];
+    let modalItem = null;
+    let modalQty = 1;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderSections();
+      loadCart();
+      updateCartDisplay();
+
+      document.addEventListener('click', (e) => {
+        const filterBtn = document.getElementById('filterDropdownBtn');
+        const filterMenu = document.getElementById('filterMenu');
+        if (!filterBtn.contains(e.target) && !filterMenu.contains(e.target)) {
+          filterMenu.classList.add('hidden');
+        }
+      });
+    });
+
+    // 4. RENDERIZAÇÃO
+    function renderSections() {
+      const container = document.getElementById('catalogSectionsContainer');
+      const emptyState = document.getElementById('emptyResults');
+
+      const filtered = catalogData.filter(p => {
+        const matchCat = selectedCategory === 'Todas' || p.categoria === selectedCategory;
+        const matchPaper = selectedPaper === 'TODOS' || p.papel.toLowerCase().includes(selectedPaper.toLowerCase());
+        const matchSearch = !searchTerm || 
+          p.nome.toLowerCase().includes(searchTerm.toLowerCase()) || 
+          p.descricao.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          p.formato.toLowerCase().includes(searchTerm.toLowerCase());
+        return matchCat && matchPaper && matchSearch;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+
+      const activeCats = categoryOrder.filter(catName => 
+        filtered.some(p => p.categoria === catName)
+      );
+
+      container.innerHTML = activeCats.map(catName => {
+        const items = filtered.filter(p => p.categoria === catName);
+
+        return `
+          <section class="space-y-6">
+            <div class="border-b border-brand-border pb-3 flex items-baseline justify-between">
+              <h2 class="font-serif text-2xl sm:text-3xl text-stone-900 tracking-tight font-bold">
+                ${catName}
+              </h2>
+              <span class="text-xs text-stone-500 font-medium tracking-wider">
+                ${items.length} ${items.length === 1 ? 'modelo' : 'modelos'}
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              ${items.map(prod => `
+                <div class="bg-white rounded-lg border border-brand-border hover:border-stone-400 transition-all duration-200 overflow-hidden flex flex-col justify-between group">
+                  
+                  <div class="relative aspect-4/3 bg-stone-50 overflow-hidden cursor-pointer flex items-center justify-center" onclick="openProductModal(${prod.id})">
+                    <img 
+                      src="${prod.fotos[0]}" 
+                      alt="${prod.nome}" 
+                      class="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
+                      loading="lazy"
+                    >
+                    <span class="absolute top-2.5 left-2.5 text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded bg-white/90 text-stone-700 shadow-xs border border-stone-200">
+                      ${prod.papel.split(' ')[0]}
+                    </span>
+                    ${prod.fotos.length > 1 ? `
+                      <span class="absolute bottom-2.5 right-2.5 text-[9px] font-semibold px-2 py-0.5 rounded bg-stone-900/70 text-white shadow-xs">
+                        ${prod.fotos.length} fotos
+                      </span>
+                    ` : ''}
+                  </div>
+
+                  <div class="p-4 flex-1 flex flex-col justify-between space-y-4">
+                    <div>
+                      <h3 
+                        onclick="openProductModal(${prod.id})" 
+                        class="font-serif text-base font-bold text-stone-900 leading-snug group-hover:text-brand-blue transition-colors cursor-pointer"
+                      >
+                        ${prod.nome}
+                      </h3>
+                      <p class="text-xs text-stone-500 mt-1 line-clamp-2 leading-relaxed">
+                        ${prod.formato} • ${prod.inclusos}
+                      </p>
+                    </div>
+
+                    <div class="pt-3 border-t border-stone-100 flex items-end justify-between">
+                      <div>
+                        <span class="text-[9px] uppercase tracking-wider text-stone-600 block font-semibold">A partir de</span>
+                        <div class="flex items-baseline gap-1">
+                          <span class="text-base font-bold text-brand-blue">${formatBRL(prod.menorPreco)}</span>
+                          <span class="text-[10px] text-stone-400">/un</span>
+                        </div>
+                      </div>
+
+                      <button 
+                        onclick="openProductModal(${prod.id})" 
+                        class="px-3 py-1.5 rounded border border-stone-300 text-stone-700 hover:border-brand-blue hover:text-brand-blue text-xs font-semibold uppercase tracking-wider transition-colors"
+                      >
+                        Configurar
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+              `).join('')}
+            </div>
+          </section>
+        `;
+      }).join('');
+    }
+
+    // 5. MODAL DO PRODUTO (GALERIA MERCADO LIVRE)
+    function openProductModal(id) {
+      const prod = catalogData.find(p => p.id === id);
+      if (!prod) return;
+      modalItem = prod;
+      modalQty = prod.pedidoMinimo;
+
+      document.getElementById('modalCategoryBadge').textContent = prod.categoria;
+      document.getElementById('modalProductName').textContent = prod.nome;
+      document.getElementById('modalProductDesc').textContent = prod.descricao;
+      document.getElementById('modalPaperTag').textContent = prod.papel;
+
+      document.getElementById('modalSpecPapel').textContent = prod.papel;
+      document.getElementById('modalSpecFormato').textContent = prod.formato;
+      document.getElementById('modalSpecInclusos').textContent = prod.inclusos;
+      document.getElementById('modalSpecMinOrder').textContent = `${prod.pedidoMinimo} un (Lote: múltiplos de ${prod.loteOtimo} un)`;
+      document.getElementById('modalMinNotice').textContent = prod.pedidoMinimo;
+
+      setupMLGallery(prod);
+
+      const input = document.getElementById('modalQtyInput');
+      input.value = modalQty;
+      input.min = prod.pedidoMinimo;
+
+      const step = prod.loteOtimo;
+      const pills = [prod.pedidoMinimo, step * 2, step * 5, step * 10]
+        .filter((v, i, self) => v >= prod.pedidoMinimo && self.indexOf(v) === i);
+
+      document.getElementById('modalQuickBatchPills').innerHTML = pills.map(val => `
+        <button 
+          onclick="setModalQtyDirect(${val})" 
+          class="px-2 py-1 text-[11px] font-semibold border border-stone-200 hover:border-brand-blue rounded bg-stone-50 hover:bg-white text-stone-700 transition-colors"
+        >
+          ${val} un
+        </button>
+      `).join('');
+
+      refreshModalCalculation();
+      document.getElementById('productConfigModal').classList.remove('hidden');
+    }
+
+    function setupMLGallery(product) {
+      const thumbsList = document.getElementById('mlThumbsList');
+      const photos = product.fotos;
+
+      thumbsList.innerHTML = photos.map((photo, i) => `
+        <button 
+          onmouseenter="selectMLPhoto(${i})" 
+          onclick="selectMLPhoto(${i})" 
+          class="ml-thumb w-14 h-14 sm:w-16 sm:h-16 rounded border-2 overflow-hidden shrink-0 transition-all ${i === 0 ? 'thumb-active' : 'border-stone-200 hover:border-stone-400'}"
+          data-index="${i}"
+        >
+          <img src="${photo}" class="w-full h-full object-cover">
+        </button>
+      `).join('');
+
+      selectMLPhoto(0);
+    }
+
+    function selectMLPhoto(index) {
+      if (!modalItem) return;
+      const mainPhoto = document.getElementById('mlMainPhoto');
+      const counter = document.getElementById('mlPhotoCounter');
+
+      mainPhoto.src = modalItem.fotos[index];
+      counter.textContent = `${index + 1} / ${modalItem.fotos.length}`;
+
+      document.querySelectorAll('.ml-thumb').forEach((thumb, i) => {
+        if (i === index) {
+          thumb.className = "ml-thumb w-14 h-14 sm:w-16 sm:h-16 rounded border-2 overflow-hidden shrink-0 transition-all thumb-active";
+        } else {
+          thumb.className = "ml-thumb w-14 h-14 sm:w-16 sm:h-16 rounded border-2 border-stone-200 overflow-hidden shrink-0 transition-all hover:border-stone-400";
+        }
+      });
+    }
+
+    function closeProductModal() {
+      document.getElementById('productConfigModal').classList.add('hidden');
+      modalItem = null;
+    }
+
+    function setModalQtyDirect(val) {
+      if (!modalItem) return;
+      modalQty = Math.max(modalItem.pedidoMinimo, val);
+      document.getElementById('modalQtyInput').value = modalQty;
+      refreshModalCalculation();
+    }
+
+    function changeModalQty(delta) {
+      if (!modalItem) return;
+      let next = modalQty + delta;
+      if (next < modalItem.pedidoMinimo) next = modalItem.pedidoMinimo;
+      modalQty = next;
+      document.getElementById('modalQtyInput').value = modalQty;
+      refreshModalCalculation();
+    }
+
+    function onModalInputQty(val) {
+      if (!modalItem) return;
+      let parsed = parseInt(val) || modalItem.pedidoMinimo;
+      if (parsed < 1) parsed = 1;
+      modalQty = parsed;
+      refreshModalCalculation();
+    }
+
+    // 6. CÁLCULO & INDICAÇÃO DA MELHOR QUANTIDADE MÍNIMA
+    function refreshModalCalculation() {
+      if (!modalItem) return;
+      const calc = calcPrice(modalItem, modalQty);
+
+      document.getElementById('modalCalcTotal').textContent = formatBRL(calc.totalCost);
+      document.getElementById('modalCalcPerUnit').textContent = `(${formatBRL(calc.unitCost)} / un)`;
+
+      const notice = document.getElementById('modalEfficiencyNotice');
+
+      if (calc.isOptimal) {
+        notice.className = "text-[11px] p-2.5 rounded-lg bg-emerald-50 text-emerald-900 border border-emerald-200 leading-normal";
+        notice.innerHTML = `
+          <div>
+            <b>Melhor valor unitário garantido:</b> Quantidade mínima para pagar <b>${formatBRL(modalItem.menorPreco)} / un</b> é a partir de <b>${modalItem.loteOtimo} unidades</b> (em múltiplos de ${modalItem.loteOtimo}).
+          </div>
+        `;
+      } else {
+        notice.className = "text-[11px] p-2.5 rounded-lg bg-amber-50 text-amber-950 border border-amber-200 leading-normal space-y-1.5";
+        notice.innerHTML = `
+          <div>
+            <b>Quantidade recomendada para menor valor:</b> Para pagar o menor valor de <b>${formatBRL(modalItem.menorPreco)} / un</b>, a quantidade mínima ideal para esta faixa é de <b>${calc.recommendedQty} unidades</b>.
+          </div>
+          <button 
+            type="button" 
+            onclick="setModalQtyDirect(${calc.recommendedQty})" 
+            class="inline-block px-2.5 py-1 bg-amber-200 hover:bg-amber-300 text-amber-950 font-bold rounded text-[10px] transition-colors"
+          >
+            Ajustar para quantidade mínima ideal (${calc.recommendedQty} un)
+          </button>
+        `;
+      }
+    }
+
+    // 7. CARRINHO & WHATSAPP
+    function confirmAddToCartFromModal() {
+      if (!modalItem) return;
+      addToCart(modalItem.id, modalQty);
+      closeProductModal();
+      toggleCart(true);
+    }
+
+    function addToCart(productId, quantity) {
+      const prod = catalogData.find(p => p.id === productId);
+      if (!prod) return;
+
+      const idx = cart.findIndex(c => c.id === productId);
+      if (idx > -1) {
+        cart[idx].quantity += quantity;
+      } else {
+        cart.push({
+          id: prod.id,
+          nome: prod.nome,
+          categoria: prod.categoria,
+          papel: prod.papel,
+          formato: prod.formato,
+          quantity: quantity
+        });
+      }
+      saveCart();
+      updateCartDisplay();
+    }
+
+    function updateCartItemQty(id, newQty) {
+      const idx = cart.findIndex(c => c.id === id);
+      if (idx === -1) return;
+
+      if (newQty <= 0) {
+        cart.splice(idx, 1);
+      } else {
+        cart[idx].quantity = newQty;
+      }
+      saveCart();
+      updateCartDisplay();
+    }
+
+    function removeCartItem(id) {
+      cart = cart.filter(c => c.id !== id);
+      saveCart();
+      updateCartDisplay();
+    }
+
+    function updateCartDisplay() {
+      const badge = document.getElementById('cartCountBadge');
+      const drawerCount = document.getElementById('drawerItemsCountText');
+      const list = document.getElementById('cartDrawerList');
+      const grandTotalEl = document.getElementById('cartDrawerGrandTotal');
+
+      const totalItems = cart.reduce((acc, c) => acc + c.quantity, 0);
+      badge.textContent = totalItems;
+      drawerCount.textContent = `${cart.length} modelo(s) adicionado(s)`;
+
+      if (cart.length === 0) {
+        list.innerHTML = `
+          <div class="py-16 text-center text-stone-400">
+            <p class="font-serif text-lg text-stone-600">Seu pedido está vazio</p>
+            <p class="text-xs text-stone-400 mt-1">Navegue pelas categorias e selecione seus itens.</p>
+          </div>
+        `;
+        grandTotalEl.textContent = formatBRL(0);
+        return;
+      }
+
+      let grandTotal = 0;
+
+      list.innerHTML = cart.map(item => {
+        const prod = catalogData.find(p => p.id === item.id);
+        const calc = calcPrice(prod, item.quantity);
+        grandTotal += calc.totalCost;
+
+        return `
+          <div class="p-3.5 bg-stone-50 border border-brand-border rounded-lg space-y-2">
+            <div class="flex justify-between items-start gap-2">
+              <div>
+                <span class="text-[9px] uppercase tracking-wider font-bold text-brand-orange">${prod.categoria}</span>
+                <h4 class="text-xs font-bold text-stone-900 leading-snug">${prod.nome}</h4>
+                <span class="text-[10px] text-stone-500">${prod.papel} • ${formatBRL(calc.unitCost)}/un</span>
+              </div>
+              <button onclick="removeCartItem(${prod.id})" class="text-stone-400 hover:text-stone-700 text-xs p-1" title="Remover item">
+                ×
+              </button>
+            </div>
+
+            <div class="flex items-center justify-between pt-1">
+              <div class="inline-flex items-center border border-stone-300 rounded bg-white text-xs">
+                <button onclick="updateCartItemQty(${prod.id}, ${item.quantity - 1})" class="px-2 py-0.5 text-stone-600 hover:bg-stone-100 font-bold">-</button>
+                <span class="px-2.5 py-0.5 font-bold text-stone-800">${item.quantity}</span>
+                <button onclick="updateCartItemQty(${prod.id}, ${item.quantity + 1})" class="px-2 py-0.5 text-stone-600 hover:bg-stone-100 font-bold">+</button>
+              </div>
+
+              <span class="text-xs font-bold font-serif text-brand-blue">${formatBRL(calc.totalCost)}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      grandTotalEl.textContent = formatBRL(grandTotal);
+    }
+
+    function toggleCart(show) {
+      document.getElementById('cartDrawer').classList.toggle('hidden', !show);
+    }
+
+    function toggleFilterMenu() {
+      document.getElementById('filterMenu').classList.toggle('hidden');
+    }
+
+    function selectCategory(cat) {
+      selectedCategory = cat;
+      document.getElementById('filterMenu').classList.add('hidden');
+      updateFilterButtonsUI();
+      renderSections();
+    }
+
+    function selectPaper(paper) {
+      selectedPaper = paper;
+      document.getElementById('filterMenu').classList.add('hidden');
+      updateFilterButtonsUI();
+      renderSections();
+    }
+
+    function handleSearch(val) {
+      searchTerm = val.trim();
+      renderSections();
+    }
+
+    function updateFilterButtonsUI() {
+      const label = document.getElementById('activeFilterName');
+      const pillContainer = document.getElementById('filterPillContainer');
+      const activePill = document.getElementById('activeFilterPill');
+
+      let activeName = "Filtros";
+      if (selectedCategory !== 'Todas') activeName = selectedCategory.split(' ')[0];
+      if (selectedPaper !== 'TODOS') activeName += ` (${selectedPaper})`;
+      label.textContent = activeName;
+
+      document.querySelectorAll('.filter-opt').forEach(btn => {
+        if (btn.getAttribute('data-val') === selectedCategory) {
+          btn.className = "filter-opt w-full text-left px-2.5 py-1.5 rounded bg-stone-100 text-brand-blue font-bold flex justify-between items-center";
+        } else {
+          btn.className = "filter-opt w-full text-left px-2.5 py-1.5 rounded hover:bg-stone-100 text-stone-600";
+        }
+      });
+
+      document.querySelectorAll('.paper-opt').forEach(btn => {
+        if (btn.getAttribute('data-paper') === selectedPaper) {
+          btn.className = "paper-opt text-left px-2 py-1 rounded bg-stone-100 font-bold text-brand-blue";
+        } else {
+          btn.className = "paper-opt text-left px-2 py-1 rounded hover:bg-stone-100 text-stone-600";
+        }
+      });
+
+      if (selectedCategory !== 'Todas' || selectedPaper !== 'TODOS') {
+        pillContainer.classList.remove('hidden');
+        pillContainer.classList.add('flex');
+        let text = [];
+        if (selectedCategory !== 'Todas') text.push(selectedCategory);
+        if (selectedPaper !== 'TODOS') text.push(`Papel: ${selectedPaper}`);
+        activePill.textContent = text.join(' • ');
+      } else {
+        pillContainer.classList.add('hidden');
+        pillContainer.classList.remove('flex');
+      }
+    }
+
+    function resetFilters() {
+      selectedCategory = 'Todas';
+      selectedPaper = 'TODOS';
+      searchTerm = '';
+      document.getElementById('searchInput').value = '';
+      document.getElementById('filterMenu').classList.add('hidden');
+      updateFilterButtonsUI();
+      renderSections();
+    }
+
+    function checkoutToWhatsApp() {
+      if (cart.length === 0) {
+        alert("Adicione pelo menos um item para solicitar o pedido.");
+        return;
+      }
+
+      let msg = "*ORÇAMENTO DE CONVITES - EMPÓRIO AVENIDA*\n";
+      msg += "Olá, gostaria de fechar o seguinte pedido de papelaria:\n\n";
+
+      let total = 0;
+
+      cart.forEach((c, index) => {
+        const prod = catalogData.find(p => p.id === c.id);
+        const calc = calcPrice(prod, c.quantity);
+        total += calc.totalCost;
+
+        msg += `${index + 1}. *${prod.nome}*\n`;
+        msg += `   • Quantidade: ${c.quantity} unidades\n`;
+        msg += `   • Papel: ${prod.papel}\n`;
+        msg += `   • Dimensão: ${prod.formato}\n`;
+        msg += `   • Custo Unitário: ${formatBRL(calc.unitCost)}\n`;
+        msg += `   • Subtotal Item: ${formatBRL(calc.totalCost)}\n\n`;
+      });
+
+      msg += "--------------------------------------\n";
+      msg += `*VALOR TOTAL ESTIMADO: ${formatBRL(total)}*\n`;
+      msg += "--------------------------------------\n";
+      msg += "Como procedemos para envio dos dados e aprovação do layout?";
+
+      const url = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
+    }
+
+    function saveCart() {
+      try {
+        localStorage.setItem('emporio_avenida_cart', JSON.stringify(cart));
+      } catch (e) {}
+    }
+
+    function loadCart() {
+      try {
+        const saved = localStorage.getItem('emporio_avenida_cart');
+        if (saved) cart = JSON.parse(saved);
+      } catch (e) { cart = []; }
+    }
+  </script>
+
+</body>
+</html>
